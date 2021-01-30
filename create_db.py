@@ -1,22 +1,18 @@
-import psycopg2
+import sqlite3
 import data
 
-conn = psycopg2.connect(data.DB_URL)
+conn = sqlite3.connect(data.DB_URL)
 cursor = conn.cursor()
 
+cursor.executescript('''CREATE TABLE IF NOT EXISTS expense (
+	id integer PRIMARY KEY AUTOINCREMENT,
+	name text,
+	datetime integer,
+	type text,
+	amount float
+)
+''')
 
-cursor.execute('''CREATE TABLE IF NOT EXISTS expense (
-	                id serial NOT NULL,
-	                name TEXT NOT NULL,
-	                datetime VARCHAR(10) NOT NULL,
-	                type TEXT NOT NULL,
-	                amount FLOAT NOT NULL,
-	                CONSTRAINT expense_pk PRIMARY KEY (id)
-                    ) WITH (
-                        OIDS=FALSE
-                        )''')
-
-
-cursor.close()
 conn.commit()
+cursor.close()
 conn.close()
